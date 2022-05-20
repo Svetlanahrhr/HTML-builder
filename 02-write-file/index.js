@@ -16,7 +16,7 @@ const { stdin, stdout } = process;
             fs.appendFile(path.join(__dirname, 'text.txt'), data, (err) => {
             if (err) throw err;
             });
-            stdout.write('Напиши что нибудь? или введи exit\n')
+            stdout.write('Напиши за что ты вычтешь 10 баллов? или введи exit\n')
         }
     });
     
