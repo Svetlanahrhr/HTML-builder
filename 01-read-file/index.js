@@ -6,3 +6,5 @@ let reader = fs.createReadStream(path.join(__dirname, 'text.txt'));
 reader.on('data', function (chunk) {
     console.log(chunk.toString());
 });
+reader.on('error', error => {
+    throw error})
