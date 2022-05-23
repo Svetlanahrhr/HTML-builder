@@ -13,7 +13,7 @@ fs.readdir(
           if (err) throw err;
           if (file.isFile()) {
             let [name, exten] = file.name.split(".");
-            console.log(name, " - ", exten, " - ", data1.size);
+            console.log(name, " - ", exten, " - ", data1.size, 'b');
           }
         }
       );
