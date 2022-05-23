@@ -1,9 +1,13 @@
 const fs = require("fs");
 const path = require("path");
 
-fs.mkdir(path.join(__dirname, "project-dist"),{ recursive: true, force: true }, (err) => {
+fs.mkdir(
+  path.join(__dirname, "project-dist"),
+  { recursive: true, force: true },
+  (err) => {
     if (err) throw err;
-})
+  }
+);
 
 let read = fs.createReadStream(path.join(__dirname, "template.html"));
 let header = "";
@@ -64,17 +68,16 @@ read
     newRes = res.replace(/{{footer}}/gi, footer);
     newRes = newRes.replace(/{{articles}}/gi, articles);
     newRes = newRes.replace(/{{header}}/gi, header);
-    console.log(newRes);
+    // console.log(newRes);
     let writer = fs.createWriteStream(
-    path.join(__dirname, "project-dist", "index.html")
-  );
-  writer.write(newRes)
-
+      path.join(__dirname, "project-dist", "index.html")
+    );
+    writer.write(newRes);
   });
 
-  //styles
+//styles
 
-  let resStyles = "";
+let resStyles = "";
 
 fs.readdir(
   path.join(__dirname, "styles"),
@@ -99,8 +102,8 @@ fs.readdir(
           reader
             .on("error", handlError)
             .on("data", (chunk) => {
-                resStyles += "\n";
-                resStyles += chunk.toString();
+              resStyles += "\n";
+              resStyles += chunk.toString();
             })
             .on("end", () => {
               writer.write(resStyles);
@@ -112,49 +115,73 @@ fs.readdir(
 );
 
 //assets
-// fs.mkdir(
-//     path.join(__dirname, "project-dist", "assets"),
-//     { recursive: true },
-//     (err) => {
-//       if (err) throw err;
-//     }
-//   );
-// fs.createReadStream(path.join(__dirname, 'assets')).pipe(fs.createWriteStream(path.join(__dirname, 'project-dist','assets')));
 
+function creatDir(dirName) {
+  fs.mkdir(
+    path.join(__dirname, "project-dist", "assets", dirName),
+    { recursive: true, force: true },
+    (err) => {
+      if (err) throw err;
+    }
+  );
+}
 
-  
-//   fs.readdir(path.join(__dirname, "assets"),{ withFileTypes: true }, (err, data) => {
-//     if (err) throw err;
-//     data.forEach((file) => {
-      
-//             fs.mkdir(
-//                 path.join(__dirname, "project-dist", "assets", file.name),
-//                 { recursive: true },
-//                 (err) => {
-//                   if (err) throw err;
-//                 }
-//               );
-//             fs.readdir(path.join(__dirname, "assets", file.name), (err, data) => {
-//                 if (err) throw err;
-//                 data.forEach(file => {
-//                     fs.copyFile(
-//                         path.join(__dirname, "assets", file),
-//                         path.join(__dirname, "project-dist", "assets", file),
-//                         (err) => {
-//                           if (err) throw err;
-//                         }
-//                       );
-//                 })
-//             })
-        
-    //   fs.copyFile(
-    //     path.join(__dirname, "assets", file),
-    //     path.join(__dirname, "project-dist", file),
-    //     (err) => {
-    //       if (err) throw err;
-    //     }
-    //   );
-    // });
-//   });
+fs.mkdir(
+  path.join(__dirname, "project-dist", "assets"),
+  { recursive: true },
+  (err) => {
+    if (err) throw err;
+  }
+);
+fs.mkdir(
+  path.join(__dirname, "project-dist", "assets", "fonts"),
+  { recursive: true },
+  (err) => {
+    if (err) throw err;
+  }
+);
+fs.mkdir(
+  path.join(__dirname, "project-dist", "assets", "img"),
+  { recursive: true },
+  (err) => {
+    if (err) throw err;
+  }
+);
+fs.mkdir(
+  path.join(__dirname, "project-dist", "assets", "svg"),
+  { recursive: true },
+  (err) => {
+    if (err) throw err;
+  }
+);
 
+function readDir(readingDirName) {
+  fs.readdir(
+    path.join(__dirname, readingDirName),
+    { withFileTypes: true },
+    (err, data) => {
+      if (err) throw err;
+      data.forEach((file) => {
+        if (!file.isFile()) {
+          readingDirName += "/";
+          readingDirName += file.name;
+          readDir(readingDirName);
+          creatDir(file.name);
+        } else {
+          console.log(file.name);
+          fs.copyFile(
+            path.join(__dirname, readingDirName, file.name),
+            path.join(__dirname, "project-dist", readingDirName, file.name),
+            (err) => {
+              if (err) throw err;
+            }
+          );
+        }
+      });
+    }
+  );
+}
 
+readDir("assets/fonts");
+readDir("assets/img");
+readDir("assets/svg");
