@@ -12,8 +12,9 @@ fs.readdir(
         (err, data1) => {
           if (err) throw err;
           if (file.isFile()) {
-            let [name, exten] = file.name.split(".");
-            console.log(name, " - ", exten, " - ", data1.size, 'b');
+            let exten = path.parse(file.name).ext.slice(1);
+            let name = path.parse(file.name).name;
+            console.log(name, " - ", exten, " - ", data1.size, "b");
           }
         }
       );
