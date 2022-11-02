@@ -1,10 +1,7 @@
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
+const { stdout } = require("process");
 
-let reader = fs.createReadStream(path.join(__dirname, 'text.txt'));
+let readeStream = fs.createReadStream(path.join(__dirname, "text.txt"));
 
-reader.on('data', function (chunk) {
-    console.log(chunk.toString());
-});
-reader.on('error', error => {
-    throw error})
+readeStream.pipe(stdout).on("error", (err) => console.log(err));
