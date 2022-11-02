@@ -18,8 +18,7 @@ stdin.on("data", (data) => {
     // stdout.write("Напиши за что ты вычтешь 10 баллов? или введи exit\n");
   }
 });
-process.on('SIGINT', () => {
-    stdout.write("Ну и пока(\n");
-    process.exit();
-  });
-
+process.on("SIGINT", () => {
+  stdout.write("Ну и пока(\n");
+  process.exit();
+});
